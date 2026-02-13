@@ -1,8 +1,8 @@
 use array2d::Array2D;
-use color::{HueDirection, Oklab, OpaqueColor};
+use color::{Oklab, OpaqueColor};
 use image::RgbImage;
 
-use crate::dejong_oscillator::DeJongState;
+use crate::{colormap::Colormap, dejong_oscillator::DeJongState};
 
 pub struct Renderer {
     array: Array2D<u32>,
@@ -32,36 +32,32 @@ impl Renderer {
     }
 
     pub fn get_image(&self) -> RgbImage {
-        let v: Vec<_> = self
+        let scaled_array: Vec<_> = self
             .array
             .as_row_major()
             .into_iter()
             .map(|v| (v as f64).log2())
             .collect();
 
-        let max_v = v.iter().fold(0.0f64, |b, x| b.max(*x));
+        let max_value = scaled_array.iter().fold(0.0f64, |b, x| b.max(*x));
 
-        let v2: Vec<_> = v
+        let first_color = OpaqueColor::<Oklab>::new([0.3, 0.0, -0.5]);
+        let second_color = OpaqueColor::<Oklab>::new([0.99, -0.35, -0.3]);
+
+        let colormap = Colormap::new(first_color, second_color);
+
+        let subpixels: Vec<_> = scaled_array
             .into_iter()
             .flat_map(|v| {
-                let sp = 1.0 - contrast(v / max_v);
+                let sp = 1.0 - contrast(v / max_value);
 
-                if sp > 0.99 {
-                    [255, 255, 255]
-                } else {
-                    let blue = OpaqueColor::<Oklab>::new([0.3, 0.0, -0.5]);
-                    let yellow = OpaqueColor::<Oklab>::new([0.99, -0.35, -0.3]);
+                let color = colormap.apply(sp).to_rgba8();
 
-                    let color = blue
-                        .lerp(yellow, sp as f32, HueDirection::Shorter)
-                        .to_rgba8();
-
-                    [color.r, color.g, color.b]
-                }
+                [color.r, color.g, color.b]
             })
             .collect();
 
-        RgbImage::from_vec(3840, 2160, v2).unwrap()
+        RgbImage::from_vec(3840, 2160, subpixels).unwrap()
     }
 }
 

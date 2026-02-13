@@ -1,3 +1,4 @@
+mod colormap;
 mod dejong_oscillator;
 mod renderer;
 
