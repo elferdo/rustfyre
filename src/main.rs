@@ -4,7 +4,7 @@ mod pixel_coloring;
 mod renderer;
 mod screen_size;
 
-use color::Oklab;
+use color::Oklch;
 use color::OpaqueColor;
 use error_stack::{Report, ResultExt};
 use thiserror::Error;
@@ -33,9 +33,9 @@ fn main() -> Result<(), Report<AppError>> {
 
     renderer.render(dj);
 
-    let background = OpaqueColor::<Oklab>::new([1.0, 0.0, 0.0]);
-    let first_color = OpaqueColor::<Oklab>::new([0.3, 0.0, -0.5]);
-    let second_color = OpaqueColor::<Oklab>::new([0.99, -0.35, -0.3]);
+    let background = OpaqueColor::<Oklch>::new([1.0, 0.0, 0.0]);
+    let first_color = OpaqueColor::<Oklch>::new([0.3, 0.0, -0.5]);
+    let second_color = OpaqueColor::<Oklch>::new([0.99, -0.35, -0.3]);
 
     let image_buffer = renderer.make_image(background, first_color, second_color);
 

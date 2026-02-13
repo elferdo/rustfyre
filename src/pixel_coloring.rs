@@ -1,22 +1,22 @@
-use color::{Oklab, OpaqueColor};
+use color::{Oklch, OpaqueColor};
 
 use crate::colormap::Colormap;
 
 pub trait PixelColoring {
     fn subpixels(
         self,
-        background: OpaqueColor<Oklab>,
-        first_color: OpaqueColor<Oklab>,
-        second_color: OpaqueColor<Oklab>,
+        background: OpaqueColor<Oklch>,
+        first_color: OpaqueColor<Oklch>,
+        second_color: OpaqueColor<Oklch>,
     ) -> Vec<u8>;
 }
 
 impl PixelColoring for &[f64] {
     fn subpixels(
         self,
-        background: OpaqueColor<Oklab>,
-        first_color: OpaqueColor<Oklab>,
-        second_color: OpaqueColor<Oklab>,
+        background: OpaqueColor<Oklch>,
+        first_color: OpaqueColor<Oklch>,
+        second_color: OpaqueColor<Oklch>,
     ) -> Vec<u8> {
         let max_value = max(self);
 

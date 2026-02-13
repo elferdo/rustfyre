@@ -1,16 +1,16 @@
-use color::{HueDirection, Oklab, OpaqueColor};
+use color::{HueDirection, Oklch, OpaqueColor};
 
 pub struct Colormap {
-    background: OpaqueColor<Oklab>,
-    first: OpaqueColor<Oklab>,
-    second: OpaqueColor<Oklab>,
+    background: OpaqueColor<Oklch>,
+    first: OpaqueColor<Oklch>,
+    second: OpaqueColor<Oklch>,
 }
 
 impl Colormap {
     pub fn new(
-        background: OpaqueColor<Oklab>,
-        first: OpaqueColor<Oklab>,
-        second: OpaqueColor<Oklab>,
+        background: OpaqueColor<Oklch>,
+        first: OpaqueColor<Oklch>,
+        second: OpaqueColor<Oklch>,
     ) -> Self {
         Self {
             background,
@@ -19,7 +19,7 @@ impl Colormap {
         }
     }
 
-    pub fn apply(&self, x: f64) -> OpaqueColor<Oklab> {
+    pub fn apply(&self, x: f64) -> OpaqueColor<Oklch> {
         if x > 0.99 {
             self.background
         } else {

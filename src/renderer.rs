@@ -1,5 +1,5 @@
 use array2d::Array2D;
-use color::{Oklab, OpaqueColor};
+use color::{Oklch, OpaqueColor};
 use image::RgbImage;
 
 use crate::{
@@ -38,9 +38,9 @@ impl Renderer4k {
 
     pub fn make_image(
         &self,
-        background: OpaqueColor<Oklab>,
-        first_color: OpaqueColor<Oklab>,
-        second_color: OpaqueColor<Oklab>,
+        background: OpaqueColor<Oklch>,
+        first_color: OpaqueColor<Oklch>,
+        second_color: OpaqueColor<Oklch>,
     ) -> RgbImage {
         let scaled_array: Vec<_> = scale_array(&self.array);
 
