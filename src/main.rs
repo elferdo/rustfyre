@@ -1,5 +1,6 @@
 mod colormap;
 mod dejong_oscillator;
+mod pixel_coloring;
 mod renderer;
 mod screen_size;
 

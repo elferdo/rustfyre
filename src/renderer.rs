@@ -2,7 +2,9 @@ use array2d::Array2D;
 use color::{Oklab, OpaqueColor};
 use image::RgbImage;
 
-use crate::{colormap::Colormap, dejong_oscillator::DeJongState, screen_size::SCREEN_SIZE_4K};
+use crate::{
+    dejong_oscillator::DeJongState, pixel_coloring::PixelColoring, screen_size::SCREEN_SIZE_4K,
+};
 
 pub struct Renderer4k {
     array: Array2D<u32>,
@@ -40,27 +42,9 @@ impl Renderer4k {
         first_color: OpaqueColor<Oklab>,
         second_color: OpaqueColor<Oklab>,
     ) -> RgbImage {
-        let scaled_array: Vec<_> = self
-            .array
-            .as_row_major()
-            .into_iter()
-            .map(|v| (v as f64).log2())
-            .collect();
+        let scaled_array: Vec<_> = scale_array(&self.array);
 
-        let max_value = scaled_array.iter().fold(f64::MIN, |b, x| b.max(*x));
-
-        let colormap = Colormap::new(background, first_color, second_color);
-
-        let subpixels: Vec<_> = scaled_array
-            .into_iter()
-            .flat_map(|v| {
-                let value = 1.0 - contrast(v / max_value);
-
-                let color = colormap.apply(value).to_rgba8();
-
-                [color.r, color.g, color.b]
-            })
-            .collect();
+        let subpixels: Vec<_> = scaled_array.subpixels(background, first_color, second_color);
 
         RgbImage::from_vec(
             SCREEN_SIZE_4K.columns as u32,
@@ -71,8 +55,10 @@ impl Renderer4k {
     }
 }
 
-fn contrast(u: f64) -> f64 {
-    let x = u * 2.0 - 1.0;
-
-    (1.0 + (x - x.powi(3) / 3.0) * 1.5) / 2.0
+fn scale_array(array: &Array2D<u32>) -> Vec<f64> {
+    array
+        .as_row_major()
+        .into_iter()
+        .map(|v| (v as f64).log2())
+        .collect()
 }
