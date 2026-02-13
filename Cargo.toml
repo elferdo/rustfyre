@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 array2d = "0.3.2"
+color = "0.3.2"
 error-stack = "0.6.0"
 image = "0.25.9"
 thiserror = "2.0.18"
