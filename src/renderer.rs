@@ -54,9 +54,9 @@ impl Renderer4k {
         let subpixels: Vec<_> = scaled_array
             .into_iter()
             .flat_map(|v| {
-                let sp = 1.0 - contrast(v / max_value);
+                let value = 1.0 - contrast(v / max_value);
 
-                let color = colormap.apply(sp).to_rgba8();
+                let color = colormap.apply(value).to_rgba8();
 
                 [color.r, color.g, color.b]
             })
