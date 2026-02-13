@@ -2,6 +2,8 @@ mod colormap;
 mod dejong_oscillator;
 mod renderer;
 
+use color::Oklab;
+use color::OpaqueColor;
 use error_stack::{Report, ResultExt};
 use thiserror::Error;
 
@@ -29,9 +31,13 @@ fn main() -> Result<(), Report<AppError>> {
 
     renderer.render(dj);
 
-    let buffer = renderer.get_image();
+    let background = OpaqueColor::<Oklab>::new([1.0, 0.0, 0.0]);
+    let first_color = OpaqueColor::<Oklab>::new([0.3, 0.0, -0.5]);
+    let second_color = OpaqueColor::<Oklab>::new([0.99, -0.35, -0.3]);
 
-    buffer
+    let image_buffer = renderer.make_image(background, first_color, second_color);
+
+    image_buffer
         .save("hola.png")
         .change_context(AppError::ImageSave)?;
 

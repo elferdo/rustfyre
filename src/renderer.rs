@@ -31,7 +31,12 @@ impl Renderer {
         }
     }
 
-    pub fn get_image(&self) -> RgbImage {
+    pub fn make_image(
+        &self,
+        background: OpaqueColor<Oklab>,
+        first_color: OpaqueColor<Oklab>,
+        second_color: OpaqueColor<Oklab>,
+    ) -> RgbImage {
         let scaled_array: Vec<_> = self
             .array
             .as_row_major()
@@ -41,10 +46,7 @@ impl Renderer {
 
         let max_value = scaled_array.iter().fold(0.0f64, |b, x| b.max(*x));
 
-        let first_color = OpaqueColor::<Oklab>::new([0.3, 0.0, -0.5]);
-        let second_color = OpaqueColor::<Oklab>::new([0.99, -0.35, -0.3]);
-
-        let colormap = Colormap::new(first_color, second_color);
+        let colormap = Colormap::new(background, first_color, second_color);
 
         let subpixels: Vec<_> = scaled_array
             .into_iter()
@@ -63,5 +65,6 @@ impl Renderer {
 
 fn contrast(u: f64) -> f64 {
     let x = u * 2.0 - 1.0;
+
     (1.0 + (x - x.powi(3) / 3.0) * 1.5) / 2.0
 }
