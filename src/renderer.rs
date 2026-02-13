@@ -2,15 +2,15 @@ use array2d::Array2D;
 use color::{Oklab, OpaqueColor};
 use image::RgbImage;
 
-use crate::{colormap::Colormap, dejong_oscillator::DeJongState};
+use crate::{colormap::Colormap, dejong_oscillator::DeJongState, screen_size::SCREEN_SIZE_4K};
 
-pub struct Renderer {
+pub struct Renderer4k {
     array: Array2D<u32>,
 }
 
-impl Renderer {
+impl Renderer4k {
     pub fn new() -> Self {
-        let array = Array2D::filled_with(1u32, 2160, 3840);
+        let array = Array2D::filled_with(1u32, SCREEN_SIZE_4K.rows, SCREEN_SIZE_4K.columns);
 
         Self { array }
     }
@@ -24,8 +24,11 @@ impl Renderer {
         for _ in 1..10000000u64 {
             let state = i.next().unwrap();
 
-            let x4k = ((state.x - xmin) * 3839.0 / (xmax - xmin)) as usize;
-            let y4k = ((state.y - ymin) * 2159.0 / (ymax - ymin)) as usize;
+            let columns = SCREEN_SIZE_4K.columns as f64;
+            let rows = SCREEN_SIZE_4K.rows as f64;
+
+            let x4k = ((state.x - xmin) * columns / (xmax - xmin)) as usize;
+            let y4k = ((state.y - ymin) * rows / (ymax - ymin)) as usize;
 
             self.array[(y4k, x4k)] += 1;
         }
@@ -44,7 +47,7 @@ impl Renderer {
             .map(|v| (v as f64).log2())
             .collect();
 
-        let max_value = scaled_array.iter().fold(0.0f64, |b, x| b.max(*x));
+        let max_value = scaled_array.iter().fold(f64::MIN, |b, x| b.max(*x));
 
         let colormap = Colormap::new(background, first_color, second_color);
 
@@ -59,7 +62,12 @@ impl Renderer {
             })
             .collect();
 
-        RgbImage::from_vec(3840, 2160, subpixels).unwrap()
+        RgbImage::from_vec(
+            SCREEN_SIZE_4K.columns as u32,
+            SCREEN_SIZE_4K.rows as u32,
+            subpixels,
+        )
+        .unwrap()
     }
 }
 

@@ -1,6 +1,7 @@
 mod colormap;
 mod dejong_oscillator;
 mod renderer;
+mod screen_size;
 
 use color::Oklab;
 use color::OpaqueColor;
@@ -9,7 +10,7 @@ use thiserror::Error;
 
 use crate::dejong_oscillator::DeJong;
 use crate::dejong_oscillator::DeJongState;
-use crate::renderer::Renderer;
+use crate::renderer::Renderer4k;
 
 #[derive(Debug, Error)]
 enum AppError {
@@ -27,7 +28,7 @@ fn main() -> Result<(), Report<AppError>> {
 
     let dj = DeJong::new(init_state, a, b, c, d);
 
-    let mut renderer = Renderer::new();
+    let mut renderer = Renderer4k::new();
 
     renderer.render(dj);
 
