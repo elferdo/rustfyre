@@ -17,20 +17,22 @@ impl Renderer4k {
         Self { array }
     }
 
-    pub fn render(&mut self, mut i: impl Iterator<Item = DeJongState>) {
-        let xmin = -2.0;
-        let xmax = 2.0;
-        let ymin = -2.0;
-        let ymax = 2.0;
+    pub fn render(&mut self, mut i: impl Iterator<Item = DeJongState>, iterations: u32) {
+        /* @todo these values should probably be derived from the actual run */
 
-        for _ in 1..10000000u64 {
+        const XMIN: f64 = -2.0;
+        const XMAX: f64 = 2.0;
+        const YMIN: f64 = -2.0;
+        const YMAX: f64 = 2.0;
+
+        for _ in 1..iterations {
             let state = i.next().unwrap();
 
             let columns = SCREEN_SIZE_4K.columns as f64;
             let rows = SCREEN_SIZE_4K.rows as f64;
 
-            let x4k = ((state.x - xmin) * columns / (xmax - xmin)) as usize;
-            let y4k = ((state.y - ymin) * rows / (ymax - ymin)) as usize;
+            let x4k = ((state.x - XMIN) * columns / (XMAX - XMIN)) as usize;
+            let y4k = ((state.y - YMIN) * rows / (YMAX - YMIN)) as usize;
 
             self.array[(y4k, x4k)] += 1;
         }
