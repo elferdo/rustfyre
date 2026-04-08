@@ -34,8 +34,8 @@ fn main() -> Result<(), Report<AppError>> {
     renderer.render(dj);
 
     let background = OpaqueColor::<Oklch>::new([1.0, 0.0, 0.0]);
-    let first_color = OpaqueColor::<Oklch>::new([0.3, 0.0, -0.5]);
-    let second_color = OpaqueColor::<Oklch>::new([0.99, -0.35, -0.3]);
+    let first_color = OpaqueColor::<Oklch>::new([0.3, 0.0, 0.0]);
+    let second_color = OpaqueColor::<Oklch>::new([0.90, 0.0, 0.0]);
 
     let image_buffer = renderer.make_image(background, first_color, second_color);
 
